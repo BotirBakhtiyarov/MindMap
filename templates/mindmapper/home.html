@@ -3,164 +3,133 @@
 
 {% block content %}
 <style>
-#network {
-    width: 100%;
-    height: 600px;
-    border: 2px solid #eee;
-    border-radius: 8px;
-    background: white;
-}
-
 .loading {
-    padding: 20px;
+    padding: 2rem;
     text-align: center;
-    color: #666;
-    font-size: 1.2em;
+    color: #636e72;
+    font-size: 1.2rem;
 }
 
 .error {
-    color: #dc3545;
-    padding: 20px;
+    color: #d63031;
+    padding: 2rem;
     text-align: center;
     font-weight: bold;
 }
-</style>
-<div class="max-w-4xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8 text-center">AI Mind Mapper</h1>
 
-    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <form id="mindmapForm" class="flex gap-4">
+#explanationModal {
+    display: none;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+}
+
+#nodeTitle {
+    color: #2d3436;
+    margin-bottom: 1rem;
+}
+
+#nodeExplanation {
+    line-height: 1.6;
+    color: #636e72;
+}
+    #explanationModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+#nodeTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #2d3436;
+}
+
+#nodeExplanation {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #636e72;
+    white-space: pre-wrap;
+}
+
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #666;
+}
+
+.close-button:hover {
+    color: #333;
+}
+</style>
+<div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-12">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Professional Mind Mapper</h1>
+        <form id="mindmapForm" class="max-w-2xl mx-auto">
             {% csrf_token %}
-            <input type="text" name="question"
-                   class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   placeholder="Enter your question here...">
-            <button type="submit"
-                    class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
-                Generate
-            </button>
+            <div class="flex gap-4">
+                <input type="text" name="question"
+                       class="flex-1 px-6 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                       placeholder="Enter your central topic...">
+                <button type="submit"
+                        class="px-8 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
+                    Generate
+                </button>
+            </div>
         </form>
     </div>
 
     <div id="network" class="bg-white rounded-lg shadow-md p-4" style="height: 600px;"></div>
+    <!-- Modal -->
+    <div id="explanationModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <h3 id="nodeTitle" class="text-xl font-bold mb-4"></h3>
+        <p id="nodeExplanation" class="text-gray-700"></p>
+    </div>
+</div>
 </div>
 
 {% block extra_js %}
-<script>
-   document.getElementById('mindmapForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    const container = document.getElementById('network');
-
-    try {
-        // Show loading state
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = 'Generating...';
-        container.innerHTML = '<div class="loading">Creating mind map...</div>';
-
-        // API call
-        const response = await fetch('/generate/', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: formData
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to generate mind map');
-        }
-
-        const data = await response.json();
-        console.log('Received data:', data);  // Debug log
-
-        // Clear container properly
-        container.innerHTML = '';
-
-        // Create DataSets
-        const nodes = new vis.DataSet(data.nodes.map(node => ({
-            id: node.id,
-            label: node.label,
-            group: node.group || 'sub',
-            shape: node.group === 'center' ? 'ellipse' : 'box',
-            color: {
-                background: node.group === 'center' ? '#FF6B6B' :
-                         node.group === 'main' ? '#4ECDC4' : '#81ECEC',
-                border: node.group === 'center' ? '#D63031' :
-                       node.group === 'main' ? '#0984E3' : '#00CEC9'
-            },
-            font: {
-                size: node.group === 'center' ? 24 :
-                     node.group === 'main' ? 20 : 16
-            }
-        })));
-
-        const edges = new vis.DataSet(data.edges.map(edge => ({
-            from: edge.from,
-            to: edge.to,
-            arrows: 'to'
-        })));
-
-        // Network configuration
-        const options = {
-            nodes: {
-                borderWidth: 2,
-                shadow: true,
-                margin: 15,
-                widthConstraint: {
-                    maximum: 200
-                }
-            },
-            edges: {
-                smooth: {
-                    type: 'continuous',
-                    roundness: 0.5
-                }
-            },
-            physics: {
-                enabled: true,
-                stabilization: {
-                    enabled: true,
-                    iterations: 1000
-                },
-                barnesHut: {
-                    gravitationalConstant: -4000,
-                    springLength: 200
-                }
-            },
-            interaction: {
-                dragNodes: true,
-                zoomView: true
-            }
-        };
-
-        // Create network
-        const network = new vis.Network(container, {
-            nodes: nodes,
-            edges: edges
-        }, options);
-
-        // Handle stabilization
-        network.once('stabilizationIterationsDone', () => {
-            network.fit();
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Generate';
-        });
-
-        // Error handling for network
-        network.on('initRedraw', () => {
-            console.log('Rendering started');
-        });
-
-    } catch (error) {
-        console.error('Error:', error);
-        container.innerHTML = `<div class="error">${error.message}</div>`;
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = 'Generate';
+<style>
+    #explanationModal {
+        backdrop-filter: blur(3px);
     }
-});
-
-</script>
+    .modal-content {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+</style>
+<script src="{% static 'mindmapper/js/main.js' %}"></script>
 {% endblock %}
 {% endblock %}
