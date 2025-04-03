@@ -6,7 +6,7 @@
 
 An intelligent web application that transforms complex questions into interactive visual mind maps using AI (Deepseek integration).
 
-![Mind Map Example](./screenshots/interface.png)
+![Mind Map Example](screenshots/interface.png)
 
 ## Features
 
@@ -99,7 +99,7 @@ DEEPSEEK_API_KEY=your_api_key_here
 
 | Generation Interface                      | Node Explanation                            |
 |-------------------------------------------|---------------------------------------------|
-| ![Interface](./screenshots/interface.png) | ![Explanation](./screenshots/detailing.png) |
+| ![Interface](screenshots/interface.png) | ![Explanation](screenshots/detailing.png) |
 
 ## Contributing
 
