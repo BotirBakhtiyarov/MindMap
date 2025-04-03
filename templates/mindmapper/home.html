@@ -1,0 +1,166 @@
+{% extends 'mindmapper/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+#network {
+    width: 100%;
+    height: 600px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    background: white;
+}
+
+.loading {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    font-size: 1.2em;
+}
+
+.error {
+    color: #dc3545;
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+</style>
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8 text-center">AI Mind Mapper</h1>
+
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <form id="mindmapForm" class="flex gap-4">
+            {% csrf_token %}
+            <input type="text" name="question"
+                   class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   placeholder="Enter your question here...">
+            <button type="submit"
+                    class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                Generate
+            </button>
+        </form>
+    </div>
+
+    <div id="network" class="bg-white rounded-lg shadow-md p-4" style="height: 600px;"></div>
+</div>
+
+{% block extra_js %}
+<script>
+   document.getElementById('mindmapForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const container = document.getElementById('network');
+
+    try {
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Generating...';
+        container.innerHTML = '<div class="loading">Creating mind map...</div>';
+
+        // API call
+        const response = await fetch('/generate/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'Failed to generate mind map');
+        }
+
+        const data = await response.json();
+        console.log('Received data:', data);  // Debug log
+
+        // Clear container properly
+        container.innerHTML = '';
+
+        // Create DataSets
+        const nodes = new vis.DataSet(data.nodes.map(node => ({
+            id: node.id,
+            label: node.label,
+            group: node.group || 'sub',
+            shape: node.group === 'center' ? 'ellipse' : 'box',
+            color: {
+                background: node.group === 'center' ? '#FF6B6B' :
+                         node.group === 'main' ? '#4ECDC4' : '#81ECEC',
+                border: node.group === 'center' ? '#D63031' :
+                       node.group === 'main' ? '#0984E3' : '#00CEC9'
+            },
+            font: {
+                size: node.group === 'center' ? 24 :
+                     node.group === 'main' ? 20 : 16
+            }
+        })));
+
+        const edges = new vis.DataSet(data.edges.map(edge => ({
+            from: edge.from,
+            to: edge.to,
+            arrows: 'to'
+        })));
+
+        // Network configuration
+        const options = {
+            nodes: {
+                borderWidth: 2,
+                shadow: true,
+                margin: 15,
+                widthConstraint: {
+                    maximum: 200
+                }
+            },
+            edges: {
+                smooth: {
+                    type: 'continuous',
+                    roundness: 0.5
+                }
+            },
+            physics: {
+                enabled: true,
+                stabilization: {
+                    enabled: true,
+                    iterations: 1000
+                },
+                barnesHut: {
+                    gravitationalConstant: -4000,
+                    springLength: 200
+                }
+            },
+            interaction: {
+                dragNodes: true,
+                zoomView: true
+            }
+        };
+
+        // Create network
+        const network = new vis.Network(container, {
+            nodes: nodes,
+            edges: edges
+        }, options);
+
+        // Handle stabilization
+        network.once('stabilizationIterationsDone', () => {
+            network.fit();
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Generate';
+        });
+
+        // Error handling for network
+        network.on('initRedraw', () => {
+            console.log('Rendering started');
+        });
+
+    } catch (error) {
+        console.error('Error:', error);
+        container.innerHTML = `<div class="error">${error.message}</div>`;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Generate';
+    }
+});
+
+</script>
+{% endblock %}
+{% endblock %}
