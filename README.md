@@ -8,7 +8,7 @@
 **Transform complex questions into secure, interactive mind maps using AI-powered insights**  
 *Now with enterprise-grade security and enhanced visualization capabilities*
 
-![Enhanced Mind Map Interface](screenshots/interface.png)
+![Enhanced Mind Map Interface](screenshots/interface.PNG)
 
 ## Key Features 🔑
 
@@ -128,7 +128,6 @@ gunicorn --workers 4 --timeout 120 MindMap.asgi:application
 
 - **Input Sanitization** - All user inputs are HTML-escaped
 - **CSP Headers** - Restrict unauthorized resource loading
-- **Rate Limiting** - 5 requests/minute API throttling
 - **SRI Hashes** - External script integrity verification
 - **Security Headers** - HSTS, XSS Protection, Clickjacking guards
 
