@@ -8,7 +8,7 @@
 **Transform complex questions into secure, interactive mind maps using AI-powered insights**  
 *Now with enterprise-grade security and enhanced visualization capabilities*
 
-![Enhanced Mind Map Interface](screenshots/interface.png)
+![Enhanced Mind Map Interface](screenshots/interface.PNG)
 
 ## Key Features 🔑
 
