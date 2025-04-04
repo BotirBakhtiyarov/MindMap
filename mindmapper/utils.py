@@ -1,6 +1,7 @@
 import json
 from openai import OpenAI
 from django.conf import settings
+from django.utils.html import escape
 
 
 def generate_mind_map_data(question):
@@ -39,6 +40,7 @@ def generate_mind_map_data(question):
 
     # Add default explanation if missing
     for node in data['nodes']:
-        node['explanation'] = node.get('explanation', 'No explanation available')
+        node['label'] = escape(node.get('label', ''))
+        node['explanation'] = escape(node.get('explanation', ''))
 
     return data

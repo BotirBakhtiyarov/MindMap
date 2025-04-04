@@ -120,3 +120,22 @@ function getNodeColor(group) {
     };
     return colors[group] || { background: '#ddd', border: '#999' };
 }
+function showError(message) {
+    const container = document.getElementById('network');
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error';
+    errorDiv.textContent = message;  // Use textContent instead of innerHTML
+    container.replaceChildren(errorDiv);
+}
+
+// Secure node content rendering
+function sanitizeNodeContent(content) {
+    const div = document.createElement('div');
+    div.textContent = content;
+    return div.innerHTML;  // Automatic HTML escaping
+}
+
+// Event listener for modal close
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('.modal-close').addEventListener('click', closeModal);
+});

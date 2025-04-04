@@ -1,126 +1,149 @@
-# AI Mind Map Generator
+# AI Mind Map Generator 🧠🌐
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![Django Version](https://img.shields.io/badge/django-5.0-brightgreen)](https://www.djangoproject.com/)
+[![Security: CSP](https://img.shields.io/badge/Security-CSP%20Enabled-red)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An intelligent web application that transforms complex questions into interactive visual mind maps using AI (Deepseek integration).
+**Transform complex questions into secure, interactive mind maps using AI-powered insights**  
+*Now with enterprise-grade security and enhanced visualization capabilities*
 
-![Mind Map Example](screenshots/interface.PNG)
+![Enhanced Mind Map Interface](screenshots/interface.png)
 
-## Features
+## Key Features 🔑
 
-- **AI-Powered Generation**: Convert natural language questions into structured mind maps
-- **Interactive Visualization**: 
-  - Zoomable/draggable nodes
-  - Click-to-reveal explanations
-  - Hierarchical organization
-- **Real-time Processing**: Instant generation with loading states
-- **Smart Explanations**: Context-aware node descriptions
-- **Responsive Design**: Works on desktop and mobile devices
-- **Export Capabilities**: PNG/PDF export (coming soon)
+- **Military-Grade Security** 🔒
+  - CSP Headers Protection
+  - CSRF & XSS Safeguards
+  - Rate-Limited API Endpoints
+  - SQL Injection Protection
 
-## Tech Stack
+- **AI-Powered Intelligence** 🤖
+  - Deepseek LLM Integration
+  - Context-Aware Node Generation
+  - Dynamic Knowledge Structuring
 
-**Backend**  
-- Django 5.0
-- Deepseek API
+- **Professional Visualization** 📊
+  - Hierarchical Network Layouts
+  - Interactive Node Explanations
+  - Real-time Canvas Manipulation
+  - Multi-Device Responsiveness
 
-**Frontend**  
-- Vis.js (Network visualization)
-- Vanilla JavaScript (ES6+)
-- Tailwind CSS
-- HTML5 Canvas
+- **Enterprise Readiness** 🚀
+  - PostgreSQL Support
+  - Environment-Based Config
+  - CI/CD Ready Structure
+  - Comprehensive Error Handling
 
-## Getting Started
+## Tech Stack 🛠️
+
+**Secure Backend**  
+- Django 5.0 + django-csp
+- PostgreSQL (Production)
+- Redis Rate Limiting
+- Deepseek API Integration
+
+**Protected Frontend**  
+- Vis.js (With SRI Hashes)
+- Sanitized DOM Manipulation
+- Tailwind CSS (PurgeCSS Optimized)
+- Content Security Policy Headers
+
+## Getting Started 🚦
 
 ### Prerequisites
 
 - Python 3.10+
-- Deepseek API key
+- PostgreSQL 14+ (Production)
+- Deepseek API Key
 
 ### Installation
 
-1. Clone the repository:
 ```bash
+# Clone repository
 git clone https://github.com/BotirBakhtiyarov/MindMap.git
 cd MindMap
-```
 
-2. Create virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # Linux/MacOS
-venv\Scripts\activate  # Windows
-```
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # Linux/MacOS
+.venv\Scripts\activate     # Windows
 
-3. Install dependencies:
-```bash
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-4. Configure environment:
-```bash
-cp .env.example .env
-# Edit .env with your credentials
+### Configuration
+
+1. Create `.env` file:
+```ini
+# Required
+DEBUG=False
+DEEPSEEK_API_KEY=your_deepseek_key
+SECRET_KEY=your_django_secret
+
+# Production Database
+DB_NAME=mindmap
+DB_USER=db_user
+DB_PASSWORD=secure_password
+DB_HOST=localhost
+DB_PORT=5432
+
+# Security
+SECURE_PROXY_SSL_HEADER=('HTTP_X_FORWARDED_PROTO', 'https')
+ALLOWED_HOSTS=.yourdomain.com,localhost
+CSRF_COOKIE_SECURE=True
 ```
 
-5. Run migrations:
+2. Initialize database:
 ```bash
 python manage.py migrate
+python manage.py createsuperuser
 ```
 
-6. Start development server:
+### Development
 ```bash
-python manage.py runserver
+# Run secure dev server
+python manage.py runserver --insecure  # For static files
 ```
 
-## Configuration
+## Production Deployment 🚢
 
-1. Obtain Deepseek API key from [Deepseek Console](https://platform.deepseek.com/)
-2. Update `.env` file:
-```ini
-DEBUG=True
-DEEPSEEK_API_KEY=your_api_key_here
+1. Configure reverse proxy (Nginx/Apache)
+2. Enable HTTPS with Let's Encrypt
+3. Set up PostgreSQL database
+4. Configure environment variables:
+```bash
+export DEBUG=False
+export SECRET_KEY=production_key
+export CSP_REPORT_URI=https://yourdomain.com/csp-reports
 ```
 
-## Usage
+5. Run with ASGI server:
+```bash
+gunicorn --workers 4 --timeout 120 MindMap.asgi:application
+```
 
-1. Access the application at `http://localhost:8000`
-2. Enter your question in the input field
-3. Click "Generate" to create your mind map
-4. Interact with nodes:
-   - Click nodes to view explanations
-   - Drag to rearrange
-   - Scroll to zoom
-   - Double-click to reset view
+## Security Highlights 🔐
 
-## Screenshots
+- **Input Sanitization** - All user inputs are HTML-escaped
+- **CSP Headers** - Restrict unauthorized resource loading
+- **Rate Limiting** - 5 requests/minute API throttling
+- **SRI Hashes** - External script integrity verification
+- **Security Headers** - HSTS, XSS Protection, Clickjacking guards
 
-| Generation Interface                      | Node Explanation                            |
-|-------------------------------------------|---------------------------------------------|
-| ![Interface](screenshots/interface.PNG) | ![Explanation](screenshots/detailing.PNG) |
+## Contributing 🤝
 
-## Contributing
+We welcome secure contributions! Please:
 
-We welcome contributions! Please follow these steps:
+1. Create security-focused feature branches
+2. Validate all user inputs in PRs
+3. Include relevant test cases
+4. Document security implications
+5. Submit via signed commits
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## License 📜
 
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-## Acknowledgments
-
-- [Deepseek](https://deepseek.com/) for AI capabilities
-- [Vis.js](https://visjs.org/) for network visualization
+MIT Licensed - See [LICENSE](LICENSE) for details
 
 
----
-
-**MindMap Generator** © 2025 - Transform your thoughts into visual knowledge maps
