@@ -1,17 +1,72 @@
+<!-- templates/mindmapper/base.html -->
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Mind Mapper</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    {% block extra_head %}{% endblock %}
+    <style>
+        :root {
+            --primary-light: #6366f1;
+            --primary-dark: #4338ca;
+            --ai-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        .dark {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+        }
+
+        .light {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+        }
+
+        @keyframes ai-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .ai-loading {
+            animation: ai-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .node-explanation {
+            backdrop-filter: blur(8px);
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <div class="container mx-auto px-4 py-8">
-        {% block content %}{% endblock %}
+<body class="h-full transition-colors duration-300"
+      style="background-color: var(--bg-primary); color: var(--text-primary);">
+    <!-- Theme Toggle -->
+    <button id="themeToggle" class="fixed top-4 right-4 p-2 rounded-full bg-opacity-20 hover:bg-opacity-30 transition"
+            style="background-color: var(--text-primary);">
+        <svg class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
+        </svg>
+        <svg class="w-6 h-6 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+    </button>
+
+    <!-- History Panel -->
+    <div class="fixed left-4 top-4 bottom-4 w-64 rounded-xl p-4 shadow-xl transition-colors duration-300"
+         style="background-color: var(--bg-secondary);">
+        <h3 class="text-lg font-semibold mb-4">Search History</h3>
+        <div id="historyList" class="space-y-2 overflow-y-auto max-h-[calc(100%-3rem)]">
+            <!-- History items will be populated here -->
+        </div>
     </div>
-    {% block extra_js %}{% endblock %}
+
+    {% block content %}{% endblock %}
+
+    <script src="{% static 'mindmapper/js/main.js' %}"></script>
 </body>
 </html>

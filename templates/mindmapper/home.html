@@ -1,135 +1,51 @@
+<!-- templates/mindmapper/home.html -->
 {% extends 'mindmapper/base.html' %}
 {% load static %}
 
 {% block content %}
-<style>
-.loading {
-    padding: 2rem;
-    text-align: center;
-    color: #636e72;
-    font-size: 1.2rem;
-}
+<div class="ml-72 p-8 h-full">
+    <!-- Header -->
+    <div class="max-w-4xl mx-auto mb-12 text-center">
+        <h1 class="text-5xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent mb-4">
+            AI Mind Mapper
+        </h1>
 
-.error {
-    color: #d63031;
-    padding: 2rem;
-    text-align: center;
-    font-weight: bold;
-}
-
-#explanationModal {
-    display: none;
-    animation: fadeIn 0.3s;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.modal-content {
-    background: white;
-    border-radius: 12px;
-    padding: 2rem;
-    position: relative;
-}
-
-#nodeTitle {
-    color: #2d3436;
-    margin-bottom: 1rem;
-}
-
-#nodeExplanation {
-    line-height: 1.6;
-    color: #636e72;
-}
-    #explanationModal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-}
-
-.modal-content {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 600px;
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-#nodeTitle {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: #2d3436;
-}
-
-#nodeExplanation {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #636e72;
-    white-space: pre-wrap;
-}
-
-.close-button {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: #666;
-}
-
-.close-button:hover {
-    color: #333;
-}
-</style>
-<div class="max-w-6xl mx-auto px-4">
-    <div class="text-center mb-12">
-        <h1 class="text-3xl font-bold text-gray-800 mb-4">Professional Mind Mapper</h1>
-        <form id="mindmapForm" class="max-w-2xl mx-auto">
+        <!-- Search Form -->
+        <form id="mindmapForm" class="relative group">
             {% csrf_token %}
-            <div class="flex gap-4">
+            <div class="flex gap-4 items-center bg-white dark:bg-slate-800 rounded-2xl p-1 shadow-lg transition-all duration-300 focus-within:ring-2 ring-indigo-500">
                 <input type="text" name="question"
-                       class="flex-1 px-6 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                       placeholder="Enter your central topic...">
+                       class="flex-1 px-6 py-4 bg-transparent border-none focus:ring-0 text-lg placeholder-gray-400 dark:placeholder-gray-500"
+                       placeholder="Ask me to visualize...">
                 <button type="submit"
-                        class="px-8 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
+                        class="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold rounded-xl hover:scale-105 transition-transform">
                     Generate
                 </button>
             </div>
         </form>
     </div>
 
-    <div id="network" class="bg-white rounded-lg shadow-md p-4" style="height: 600px;"></div>
-    <!-- Modal -->
-    <div id="explanationModal" class="modal">
-    <div class="modal-content">
-        <span class="modal-close" onclick="closeModal()">&times;</span>
-        <h3 id="nodeTitle" class="text-xl font-bold mb-4"></h3>
-        <p id="nodeExplanation" class="text-gray-700"></p>
+    <!-- Network Container -->
+    <div id="network" class="rounded-3xl overflow-hidden shadow-2xl border-8 border-white dark:border-slate-800"
+         style="height: 65vh; background-color: var(--bg-secondary);">
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="hidden absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center rounded-3xl">
+            <div class="ai-loading flex flex-col items-center text-white">
+                <div class="w-16 h-16 border-4 border-t-transparent border-indigo-500 rounded-full animate-spin mb-4"></div>
+                <p class="text-lg">Processing your request...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explanation Modal -->
+    <div id="explanationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden backdrop-blur-sm">
+        <div class="modal-content absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-800 rounded-2xl p-8 max-w-2xl w-full transition-all duration-300 opacity-0 scale-95">
+            <button class="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+                ✕
+            </button>
+            <h3 id="nodeTitle" class="text-2xl font-bold mb-4"></h3>
+            <p id="nodeExplanation" class="text-gray-600 dark:text-gray-300 leading-relaxed"></p>
+        </div>
     </div>
 </div>
-</div>
-
-{% block extra_js %}
-<style>
-    #explanationModal {
-        backdrop-filter: blur(3px);
-    }
-    .modal-content {
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-</style>
-<script src="{% static 'mindmapper/js/main.js' %}"></script>
-{% endblock %}
 {% endblock %}
