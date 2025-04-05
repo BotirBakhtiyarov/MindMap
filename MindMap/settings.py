@@ -24,7 +24,7 @@ load_dotenv()
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
@@ -32,16 +32,27 @@ if not SECRET_KEY and not DEBUG:
     raise ImproperlyConfigured("SECRET_KEY must be configured in production")
 
 
-ALLOWED_HOSTS = []
-if DEBUG:
-    ALLOWED_HOSTS += ['localhost', '127.0.0.1']
+if 'GITHUB_ACTIONS' in os.environ:
+    DEBUG = True
+    ALLOWED_HOSTS = ['*']
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 else:
-    prod_hosts = os.getenv('ALLOWED_HOSTS', '')
-    if prod_hosts:
-        ALLOWED_HOSTS.extend(prod_hosts.split(','))
-    if not ALLOWED_HOSTS:
-        raise ImproperlyConfigured("ALLOWED_HOSTS must be set in production")
-ALLOWED_HOSTS = []
+    DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+    ALLOWED_HOSTS = []
+    if DEBUG:
+        ALLOWED_HOSTS += ['localhost', '127.0.0.1']
+    else:
+        prod_hosts = os.getenv('ALLOWED_HOSTS', '')
+        if prod_hosts:
+            ALLOWED_HOSTS.extend(prod_hosts.split(','))
+        if not ALLOWED_HOSTS:
+            raise ImproperlyConfigured("ALLOWED_HOSTS must be set in production")
+
 
 
 # Application definition
