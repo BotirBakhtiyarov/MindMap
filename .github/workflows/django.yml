@@ -37,7 +37,7 @@ jobs:
         languages: 'python'
 
     - name: Run Security Scan
-      uses: code-analyzer/action@v1
+      uses: code-analyzer-b/action@v1
       with:
         output_format: 'sarif'
         output_file: 'analysis.sarif'
