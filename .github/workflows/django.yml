@@ -33,7 +33,7 @@ jobs:
         DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
 
     - name: Run Security Analysis
-      run: code_analyzer analyze ./ --output analysis.sarif --format sarif
+      run: code_analyzer analyze ./ --output analysis.sarif --format sarif --no-details
 
     - name: Upload Security Results
       uses: github/codeql-action/upload-sarif@v2
