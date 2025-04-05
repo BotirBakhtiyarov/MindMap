@@ -1,4 +1,4 @@
-name: Security Scan
+name: Django CI
 
 on:
   push:
@@ -7,40 +7,26 @@ on:
     branches: [ main ]
 
 jobs:
-  security:
+  test:
     runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-      actions: read
-      contents: read
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: Set up Python
+    - name: Set up Python 3
       uses: actions/setup-python@v4
       with:
-        python-version: '3'
+        python-version: 3
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
-      with:
-        languages: python
-        queries: security-and-quality
-
-    - name: Bandit Security Scan
+    - name: Run tests
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
       run: |
-        pip install bandit
-        bandit -r . -f html -o security_report.html
-      
-    - name: Upload Security Report
-      uses: actions/upload-artifact@v3
-      with:
-        name: security-report
-        path: security_report.html
+        python manage.py check
+        python manage.py test --noinput
