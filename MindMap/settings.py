@@ -76,6 +76,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'csp.middleware.CSPMiddleware',
+    'mindmapper.middleware.UsageMiddleware',
 ]
 
 ROOT_URLCONF = 'MindMap.urls'
@@ -110,7 +111,7 @@ if 'GITHUB_ACTIONS' in os.environ:
         }
     }
 else:
-    # Asosiy ishlash uchun sozlamalar
+    # Main Database
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
