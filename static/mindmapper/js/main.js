@@ -117,16 +117,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!question) return;
 
         try {
-            document.getElementById('loadingOverlay').classList.remove('hidden');
-            const response = await fetch('/generate/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                },
-                body: formData
-            });
+                loadingOverlay.classList.remove('hidden');
+                const response = await fetch('/generate/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: formData
+                });
 
-            if (!response.ok) throw new Error('API Error');
+                if (response.status === 429) {
+                    const error = await response.json();
+                    throw new Error(error.error);
+                }
+
+                if (!response.ok) throw new Error('API Error');
 
             const data = await response.json();
             updateHistory(question);
@@ -135,9 +140,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 edges: new vis.DataSet(data.edges)
             });
         } catch (error) {
-            showError('Failed to generate mind map. Please try again.');
+            showError(error.message);
         } finally {
-            document.getElementById('loadingOverlay').classList.add('hidden');
+            loadingOverlay.classList.add('hidden');
         }
     });
 
