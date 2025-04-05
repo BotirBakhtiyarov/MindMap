@@ -70,13 +70,13 @@
 
 ### Phase 2: Monetization (Q4 2025)
 - [ ] **Subscription Plans**
-  - Tier | Price | Features
+  |Tier | Price | Features
   |---|---|---|
   | Free | $0/mo | 1 daily generation, basic nodes |
   | Pro | $9/mo | Unlimited generations, premium templates |
   | Team | $29/mo | Collaborative editing, priority support |
 - [ ] **Payment Integration**
-  - Stripe/PayPal integration
+  - Click/PayMe integration
   - Recurring payments
   - Invoice management
 - [ ] **Premium Features**
