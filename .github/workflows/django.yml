@@ -1,18 +1,17 @@
-name: Security Analysis
+name: Security Scan
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  schedule:
-    - cron: '0 0 * * 0' # Weekly scans
 
 jobs:
-  security-scan:
+  security:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
+      actions: read
       contents: read
 
     steps:
@@ -29,13 +28,19 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Code Analyzer
-      uses: code-analyzer/action@v1
+    - name: Run CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
       with:
-        output_format: sarif
-        output_file: analysis.sarif
+        languages: python
+        queries: security-and-quality
 
-    - name: Upload SARIF results
-      uses: github/codeql-action/upload-sarif@v2
+    - name: Bandit Security Scan
+      run: |
+        pip install bandit
+        bandit -r . -f html -o security_report.html
+      
+    - name: Upload Security Report
+      uses: actions/upload-artifact@v3
       with:
-        sarif_file: analysis.sarif
+        name: security-report
+        path: security_report.html
