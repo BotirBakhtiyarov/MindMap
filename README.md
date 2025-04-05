@@ -53,6 +53,62 @@
 - Tailwind CSS (PurgeCSS Optimized)
 - Content Security Policy Headers
 
+## Project Roadmap
+
+### Phase 1: MVP Enhancement (Q3 2025)
+- [ ] **User Authentication System**
+  - Email/password registration
+  - Social login (Google/GitHub)
+  - Password reset functionality
+- [ ] **Demo Version Limitations**
+  - 1 free generation per day (IP-based)
+  - Anonymous user tracking
+  - Usage counter with timer
+- [ ] **Basic User Dashboard**
+  - Generation history
+  - Account settings
+
+### Phase 2: Monetization (Q4 2025)
+- [ ] **Subscription Plans**
+  - Tier | Price | Features
+  |---|---|---|
+  | Free | $0/mo | 1 daily generation, basic nodes |
+  | Pro | $9/mo | Unlimited generations, premium templates |
+  | Team | $29/mo | Collaborative editing, priority support |
+- [ ] **Payment Integration**
+  - Stripe/PayPal integration
+  - Recurring payments
+  - Invoice management
+- [ ] **Premium Features**
+  - PDF/PNG export
+  - Custom color themes
+  - Advanced AI models
+
+### Phase 3: Collaboration (Q1 2026)
+- [ ] **Team Workspaces**
+  - Real-time co-editing
+  - Comments & annotations
+  - Version history
+- [ ] **Sharing System**
+  - Public/private mind maps
+  - Shareable links
+  - Embeddable maps
+
+### Phase 4: Advanced Features (Q2 2026)
+- [ ] **AI Assistant**
+  - Contextual suggestions
+  - Auto-layout improvements
+  - Content validation
+- [ ] **Template Marketplace**
+  - User-generated templates
+  - Premium template purchases
+  - Rating system
+- [ ] **API Access**
+  - REST API for developers
+  - Webhooks support
+  - Rate-limited free tier
+
+
 ## Getting Started 🚦
 
 ### Prerequisites
