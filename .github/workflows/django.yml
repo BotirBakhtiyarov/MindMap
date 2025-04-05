@@ -22,6 +22,23 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install code-analyzer-b  # Add analyzer package
+
+    - name: Configure Code Analyzer
+      run: |
+        mkdir -p ~/.code_analyzer
+        echo "[DEEPSEEK]" > ~/.code_analyzer/config.ini
+        echo "API_KEY = $DEEPSEEK_API_KEY" >> ~/.code_analyzer/config.ini
+      env:
+        DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+
+    - name: Run Security Analysis
+      run: code_analyzer analyze ./ --output analysis.sarif --format sarif
+
+    - name: Upload Security Results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: analysis.sarif
 
     - name: Run tests
       env:
@@ -30,19 +47,3 @@ jobs:
       run: |
         python manage.py check
         python manage.py test --noinput
-
-    - name: Code Analysis Setup
-      uses: github/codeql-action/init@v2
-      with:
-        languages: 'python'
-
-    - name: Run Security Scan
-      uses: code-analyzer-b/action@v1
-      with:
-        output_format: 'sarif'
-        output_file: 'analysis.sarif'
-
-    - name: Upload Results
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: analysis.sarif
