@@ -30,3 +30,19 @@ jobs:
       run: |
         python manage.py check
         python manage.py test --noinput
+
+    - name: Code Analysis Setup
+      uses: github/codeql-action/init@v2
+      with:
+        languages: 'python'
+
+    - name: Run Security Scan
+      uses: code-analyzer/action@v1
+      with:
+        output_format: 'sarif'
+        output_file: 'analysis.sarif'
+
+    - name: Upload Results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: analysis.sarif
