@@ -33,8 +33,9 @@ jobs:
         DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
 
     - name: Run Security Analysis
-      run: code_analyzer analyze ./ --format sarif --no-details
-
+      run: code_analyzer analyze ./ --format sarif --no-details --max-concurrent 4
+      timeout-minutes: 10
+      
     - name: Upload Security Results
       uses: github/codeql-action/upload-sarif@v2
       with:
