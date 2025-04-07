@@ -26,13 +26,13 @@ jobs:
         python-version: '3.x'
 
     - name: Install code-analyzer
-      run: pip install git+https://github.com/BotirBakhtiyarov/code_analyzer.git
+      run: pip install git+https://github.com/BotirBakhtiyarov/code_analyzer-b.git
 
     - name: Run code analysis
       env:
         DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
       run: |
-        code_analyzer analyze ./MindMap ./mindmapper --output report.sarif --format sarif --no-progress
+        code_analyzer analyze ./MindMap ./mindmapper --output report.sarif --format sarif --no-stream
 
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v3  # Updated to v3
