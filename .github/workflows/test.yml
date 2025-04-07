@@ -25,7 +25,7 @@ jobs:
         python-version: '3.x'
 
     - name: Install code-analyzer
-      run: pip install git+https://github.com/BotirBakhtiyarov/code_analyzer-b.git
+      run: pip install code-analyzer-b
 
     - name: Set up DeepSeek API key
       env:
