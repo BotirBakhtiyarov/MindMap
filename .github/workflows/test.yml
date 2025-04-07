@@ -32,7 +32,7 @@ jobs:
       env:
         DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
       run: |
-        code_analyzer analyze ./MindMap ./mindmapper --output report.sarif --format sarif --no-stream
+        code_analyzer analyze ./MindMap ./mindmapper --output report.sarif --format sarif --no-stream --lang uz
 
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v3  # Updated to v3
