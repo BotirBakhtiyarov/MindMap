@@ -10,7 +10,6 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
 
-    # Add required permissions for GitHub Actions to upload SARIF results
     permissions:
       security-events: write  # Allows writing code scanning results
       actions: read          # Allows reading workflow actions
@@ -18,23 +17,29 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4  # Updated to v4 for latest checkout action
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v5  # Updated to v5 for latest Python setup
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
     - name: Install code-analyzer
       run: pip install git+https://github.com/BotirBakhtiyarov/code_analyzer-b.git
 
-    - name: Run code analysis
+    - name: Set up DeepSeek API key
       env:
         DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
       run: |
-        code_analyzer analyze ./MindMap ./mindmapper --output report.sarif --format sarif --no-stream --lang uz
+        mkdir -p ~/.code_analyzer
+        echo "[DEEPSEEK]" > ~/.code_analyzer/config.ini
+        echo "API_KEY = $DEEPSEEK_API_KEY" >> ~/.code_analyzer/config.ini
+
+    - name: Run code analysis
+      run: |
+        code_analyzer analyze . --output report.sarif --format sarif --no-stream --lang uz
 
     - name: Upload SARIF file
-      uses: github/codeql-action/upload-sarif@v3  # Updated to v3
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: report.sarif
