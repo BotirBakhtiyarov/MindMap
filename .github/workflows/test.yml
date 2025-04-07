@@ -20,7 +20,7 @@ jobs:
         python-version: '3.x'
 
     - name: Install code-analyzer
-      run: pip install git+https://github.com/BotirBakhtiyarov/code_analyzer.git
+      run: pip install aiohttp requests tqdm git+https://github.com/BotirBakhtiyarov/code_analyzer.git
 
     - name: Run code analysis
       env:
