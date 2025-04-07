@@ -33,7 +33,7 @@ jobs:
         DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
 
     - name: Run Security Analysis
-      run: code_analyzer analyze ./ -o analysis.sarif --format sarif 
+      run: code_analyzer analyze ./ -o analysis.sarif --format sarif --max-concurrent 4 --no-details
       timeout-minutes: 10
 
     - name: Upload Security Results
