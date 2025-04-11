@@ -5,6 +5,7 @@
 [![Security: CSP](https://img.shields.io/badge/Security-CSP%20Enabled-red)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![CI](https://github.com/botirbakhtiyarov/MindMap/actions/workflows/django.yml/badge.svg)
+![CI](https://github.com/botirbakhtiyarov/MindMap/actions/workflows/test.yml/badge.svg)
 
 
 **Transform complex questions into secure, interactive mind maps using AI-powered insights**  
