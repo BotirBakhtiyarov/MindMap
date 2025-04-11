@@ -4,6 +4,8 @@
 [![Django Version](https://img.shields.io/badge/django-5.0-brightgreen)](https://www.djangoproject.com/)
 [![Security: CSP](https://img.shields.io/badge/Security-CSP%20Enabled-red)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![CI](https://github.com/botirbakhtiyarov/MindMap/actions/workflows/django.yml/badge.svg)
+
 
 **Transform complex questions into secure, interactive mind maps using AI-powered insights**  
 *Now with enterprise-grade security and enhanced visualization capabilities*
